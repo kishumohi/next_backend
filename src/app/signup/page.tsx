@@ -1,7 +1,106 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-const Signup = () => {
-  return <div>Signup</div>;
-};
+export default function SignupPage() {
+  const router = useRouter();
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+    username: "",
+  });
 
-export default Signup;
+  const [buttonDisabled, setbuttonDisabled] = useState(false);
+
+  const [loading, setloading] = useState(false);
+
+  const onSignup = async () => {
+    try {
+      setloading(true);
+      const response = await axios.post("/api/users/signup", user);
+      console.log("Signup Success", response.data);
+      router.push("/login");
+    } catch (error: any) {
+      console.log("Signup Failed", error);
+      toast.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (
+      user.email.length > 0 &&
+      user.password.length > 0 &&
+      user.username.length > 0
+    ) {
+      setbuttonDisabled(false);
+    } else {
+      setbuttonDisabled(true);
+    }
+  }, [user]);
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen py-2">
+      <h1>{loading ? "Processing" : "Signup"}</h1>
+      <hr />
+
+      <div className="p-2">
+        <label
+          htmlFor="username"
+          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >
+          UserName
+        </label>
+        <input
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          type="text"
+          id="username"
+          value={user.username}
+          onChange={(e) => setUser({ ...user, username: e.target.value })}
+          placeholder="username"
+        />
+      </div>
+      <div className="p-2">
+        <label
+          htmlFor="Email"
+          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >
+          Email
+        </label>
+        <input
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          type="email"
+          id="email"
+          value={user.email}
+          onChange={(e) => setUser({ ...user, email: e.target.value })}
+          placeholder="email"
+        />
+      </div>
+      <div className="p-2">
+        <label
+          htmlFor="password"
+          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >
+          Password
+        </label>
+        <input
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          type="password"
+          id="password"
+          value={user.password}
+          onChange={(e) => setUser({ ...user, password: e.target.value })}
+          placeholder="password"
+        />
+      </div>
+      <button
+        onClick={onSignup}
+        className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+      >
+        {buttonDisabled ? "No Signup" : "Signup"}
+      </button>
+      <Link href="/login">Visit login page</Link>
+    </div>
+  );
+}
