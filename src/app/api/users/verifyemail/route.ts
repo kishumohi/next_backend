@@ -17,6 +17,10 @@ export async function POST(request: NextRequest) {
 
     console.log(user);
 
+    if (!user) {
+      return NextResponse.json({ error: "Invalid Token" }, { status: 400 });
+    }
+
     user.isVerified = true;
     user.verifyToken = undefined;
     user.verifyTokenExpiry = undefined;
@@ -30,10 +34,6 @@ export async function POST(request: NextRequest) {
       },
       { status: 200 }
     );
-
-    if (!user) {
-      return NextResponse.json({ error: "Invalid Token" }, { status: 400 });
-    }
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
