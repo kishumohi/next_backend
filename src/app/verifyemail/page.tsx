@@ -1,7 +1,6 @@
 "use client";
 import axios from "axios";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 
 export default function VerifyEmailPage() {
