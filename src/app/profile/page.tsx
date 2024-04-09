@@ -24,6 +24,7 @@ export default function ProfilePage() {
       await axios.get("/api/users/logout");
       toast.success("logout Success");
       router.push("/login");
+      router.refresh();
     } catch (error: any) {
       console.log(error.message);
       toast.error(error.message);
